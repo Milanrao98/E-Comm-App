@@ -20,12 +20,14 @@ function App() {
 
   // Authenticate the user if he is already logged in and set the user in the auth context.
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         dispatch(setAuthUser({ user }));
       }
     });
-  }, [dispatch]);
+
+    return () => unsubscribe();
+  }, [auth, dispatch]);
 
   return (
     <div className="App">
@@ -43,6 +45,7 @@ function App() {
       <header>
         <Navbar />
       </header>
+
       <Routes>
         <Route path="/" exact element={<HomePage />} />
         <Route path="/signup" exact element={<RegisterPage />} />
