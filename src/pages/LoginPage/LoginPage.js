@@ -37,7 +37,7 @@ const LoginPage = () => {
       toast.error(message);
       dispatch(clearError());
     }
-  }, [error, user]);
+  }, [isAuth, error, message, dispatch, navigate]);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -73,6 +73,7 @@ const LoginPage = () => {
         <button className={styles.loginBtn}>
           {loading ? "..." : "Sign In"}
         </button>
+
         <NavLink
           to="/signup"
           style={{
