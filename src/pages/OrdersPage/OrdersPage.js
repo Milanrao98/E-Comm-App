@@ -15,45 +15,48 @@ const OrdersPage = () => {
 
   const user = useSelector(getUser);
 
-  // Fetch user orders from firestore
-  const getOrders = async () => {
-    setLoading(true);
-    try {
-      const docRef = doc(db, "userOrders", user.uid);
-      const docSnap = await getDoc(docRef);
-      const data = docSnap.data();
-
-      // Display error message if no orders found
-      if (!data) {
-        return toast.error("No Orders Found!");
-      }
-
-      // Array to store promises
-      let promiseArray = [];
-
-      // For each order call the getProductsUsingProductIds() and store the promise in the array
-      data.orders.forEach((order) => {
-        promiseArray.push(
-          new Promise((resolve, reject) => {
-            const data = getProductsUsingProductIds(order);
-            if (data) resolve(data);
-            else reject("Something went wrong");
-          })
-        );
-      });
-
-      // Resolve all promises and store them in the final orders array
-      const finalOrders = await Promise.all(promiseArray);
-      console.log(finalOrders);
-      setOrders(finalOrders);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    // if user is not present, don't fetch orders
+    if (!user?.uid) return;
+
+    // Fetch user orders from firestore
+    const getOrders = async () => {
+      setLoading(true);
+      try {
+        const docRef = doc(db, "userOrders", user.uid);
+        const docSnap = await getDoc(docRef);
+        const data = docSnap.data();
+
+        // Display error message if no orders found
+        if (!data) {
+          setOrders([]);
+          return toast.error("No Orders Found!");
+        }
+
+        // Array to store promises
+        const promiseArray = [];
+
+        // For each order call the getProductsUsingProductIds() and store the promise in the array
+        data.orders.forEach((order) => {
+          promiseArray.push(
+            new Promise((resolve, reject) => {
+              const productsData = getProductsUsingProductIds(order);
+              if (productsData) resolve(productsData);
+              else reject("Something went wrong");
+            })
+          );
+        });
+
+        // Resolve all promises and store them in the final orders array
+        const finalOrders = await Promise.all(promiseArray);
+        setOrders(finalOrders);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     getOrders();
   }, [user]);
 
