@@ -1,18 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
 import "./Navbar.css";
 import { useSelector, useDispatch } from "react-redux";
-import { getUser } from "../../redux/reducers/authReducer";
-import { logout } from "../../redux/reducers/authReducer";
+import { getUser, logout } from "../../redux/reducers/authReducer";
+
 //Icons..
 import HomeIcon from "../../assets/home.png";
 import OrdersIcon from "../../assets/basket.png";
 import SignIn from "../../assets/Log in.png";
-import Logout from "../../assets/Log Out.png";
+import LogoutIcon from "../../assets/Log Out.png";
 import Cart from "../../assets/cart.png";
 
 const Navbar = () => {
-  const [click, setClick] = useState(false);
   const dispatch = useDispatch();
 
   const user = useSelector(getUser);
@@ -25,7 +24,7 @@ const Navbar = () => {
   // Function to logout from app
   const onLogoutHandler = () => {
     scrollTop();
-    dispatch(logout()); // inbuilt firebase function to logout
+    dispatch(logout());
   };
 
   return (
@@ -37,13 +36,11 @@ const Navbar = () => {
       }}
     >
       <div className="navbar-container">
-        <NavLink to="/" className="navbar-logo" onClick={() => {}}>
+        <NavLink to="/" className="navbar-logo" onClick={scrollTop}>
           Busy Buy
         </NavLink>
-        <ul
-          className={click ? "nav-menu active" : "nav-menu"}
-          onClick={scrollTop}
-        >
+
+        <ul className="nav-menu" onClick={scrollTop}>
           <li className="nav-item active">
             <NavLink
               activeclassname="active-links"
@@ -55,8 +52,7 @@ const Navbar = () => {
                 <img
                   className="icon_styles"
                   src={HomeIcon}
-                  alt="Home"
-                  onClick={scrollTop}
+                  alt="Home Icon"
                 />
               </span>{" "}
               Home
@@ -75,8 +71,7 @@ const Navbar = () => {
                     <img
                       className="icon_styles"
                       src={OrdersIcon}
-                      alt="Home"
-                      onClick={scrollTop}
+                      alt="Orders Icon"
                     />
                   </span>{" "}
                   My orders
@@ -93,8 +88,7 @@ const Navbar = () => {
                     <img
                       className="icon_styles"
                       src={Cart}
-                      alt="Home"
-                      onClick={scrollTop}
+                      alt="Cart Icon"
                     />
                   </span>{" "}
                   Cart
@@ -112,28 +106,29 @@ const Navbar = () => {
                 className="nav-links"
               >
                 <span>
-                  <img className="icon_styles" src={Logout} alt="Home" />
+                  <img
+                    className="icon_styles"
+                    src={LogoutIcon}
+                    alt="Logout Icon"
+                  />
                 </span>
                 Logout
               </NavLink>
             ) : (
-              <>
-                <NavLink
-                  activeclassname="active-links"
-                  to="/signin"
-                  className="nav-links"
-                >
-                  <span>
-                    <img
-                      className="icon_styles"
-                      src={SignIn}
-                      alt="Home"
-                      onClick={scrollTop}
-                    />
-                  </span>
-                  SignIn
-                </NavLink>
-              </>
+              <NavLink
+                activeclassname="active-links"
+                to="/signin"
+                className="nav-links"
+              >
+                <span>
+                  <img
+                    className="icon_styles"
+                    src={SignIn}
+                    alt="Sign In Icon"
+                  />
+                </span>
+                SignIn
+              </NavLink>
             )}
           </li>
         </ul>
