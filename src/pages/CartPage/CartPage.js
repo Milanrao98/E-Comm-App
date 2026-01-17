@@ -25,13 +25,19 @@ const CartPage = () => {
   const purchasing = useSelector(getPurchasingState);
 
   // Calculate total price of the products in cart
-  let totalPrice = cartProducts?.reduce((acc, currentProduct) => {
+  const totalPrice = cartProducts?.reduce((acc, currentProduct) => {
     return acc + currentProduct.price * currentProduct.quantity;
   }, 0);
 
   useEffect(() => {
-    dispatch(fetchCartProducts({ uid: user?.uid }));
-  }, [user]);
+    if (!user?.uid) return;
+    dispatch(fetchCartProducts({ uid: user.uid }));
+  }, [dispatch, user?.uid]);
+
+  const clearUserCartAndRedirectToOrdersPage = async () => {
+    await dispatch(clearUserCart({ uid: user?.uid }));
+    navigate("/myorders");
+  };
 
   const purchaseProductsHandler = async () => {
     try {
@@ -42,12 +48,6 @@ const CartPage = () => {
       toast.error("Something went wrong!");
       console.log(error);
     }
-  };
-
-  // Clear user cart
-  const clearUserCartAndRedirectToOrdersPage = async () => {
-    await dispatch(clearUserCart({ uid: user?.uid }));
-    navigate("/myorders");
   };
 
   if (loading) return <Loader />;
