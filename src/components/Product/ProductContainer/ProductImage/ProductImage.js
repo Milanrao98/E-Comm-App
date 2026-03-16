@@ -3,7 +3,7 @@ import styles from "./ProductImage.module.css";
 
 // Product Image Component
 const ProductImage = ({ image }) => {
-  const fallback = "https://via.placeholder.com/150";
+  const fallback = "https://dummyimage.com/150x150/cccccc/000000&text=Product";
 
   return (
     <div className={styles.imageContainer}>
